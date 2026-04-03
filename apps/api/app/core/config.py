@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     R2_BUCKET_NAME: str = "positivespace"
     R2_PUBLIC_URL: Optional[str] = None
     R2_ENDPOINT: Optional[str] = None
+    R2_ENDPOINT_URL: Optional[str] = None
     
     # AI Services
     HUGGINGFACE_TOKEN: Optional[str] = None
