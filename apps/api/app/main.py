@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from fastapi import Request
+from sqlalchemy import text
 import traceback
 from app.core.config import settings
 from app.db import init_db, close_db, get_db, engine
