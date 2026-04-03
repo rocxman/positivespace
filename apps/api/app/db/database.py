@@ -8,6 +8,13 @@ engine_kwargs = {
 
 if settings.DATABASE_URL.startswith("sqlite"):
     engine_kwargs["connect_args"] = {"check_same_thread": False}
+elif settings.DATABASE_URL.startswith("postgresql+asyncpg"):
+    engine_kwargs["connect_args"] = {
+        "ssl": "require",
+        "server_settings": {
+            "sslmode": "require"
+        }
+    }
 else:
     engine_kwargs["pool_pre_ping"] = True
     engine_kwargs["pool_size"] = 10
