@@ -2,30 +2,12 @@
   "name": "positivespace",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "lint": "turbo lint",
-    "test": "turbo test",
-    "clean": "turbo clean",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "start": "cd apps/api && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "prettier": "^3.2.0",
-    "turbo": "^2.0.0",
-    "typescript": "^5.4.0"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-  "packageManager": "npm@10.2.0",
-  "dependencies": {
-    "next": "^15.0.7"
+    "turbo": "^2.0.0"
   }
 }
