@@ -1,11 +1,9 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional, List
 from datetime import datetime
-from uuid import UUID
 import re
 
 
-# Base schemas
 class UserBase(BaseModel):
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=30)
@@ -37,7 +35,7 @@ class UserUpdate(BaseModel):
 
 
 class UserResponse(UserBase):
-    id: UUID
+    id: str
     full_name: Optional[str] = None
     avatar_url: Optional[str] = None
     plan: str
@@ -54,7 +52,6 @@ class UserMe(BaseModel):
     user: UserResponse
 
 
-# Auth schemas
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
