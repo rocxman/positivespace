@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY apps/api/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir --force-reinstall bcrypt==4.0.1 && \
+    pip install --no-cache-dir -r /tmp/requirements.txt
 
 COPY apps/api/ /app/apps/api/
 
