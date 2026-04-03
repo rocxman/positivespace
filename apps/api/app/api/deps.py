@@ -2,7 +2,6 @@ from fastapi import Depends, HTTPException, status, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from uuid import UUID
 from typing import Optional
 from app.db import get_db
 from app.models import User
@@ -25,15 +24,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    try:
-        user_uuid = UUID(user_id)
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token format",
-        )
-    
-    result = await db.execute(select(User).where(User.id == str(user_uuid)))
+    result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     
     if user is None:
@@ -90,10 +81,5 @@ async def get_optional_current_user(
     if user_id is None:
         return None
     
-    try:
-        user_uuid = UUID(user_id)
-    except ValueError:
-        return None
-    
-    result = await db.execute(select(User).where(User.id == str(user_uuid)))
+    result = await db.execute(select(User).where(User.id == user_id))
     return result.scalar_one_or_none()
