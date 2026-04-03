@@ -7,6 +7,7 @@ import traceback
 import logging
 from app.core.config import settings
 from app.db import init_db, close_db, get_db, engine, Base, AsyncSessionLocal
+from app.api import auth_router, songs_router, generate_router, credits_router
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
