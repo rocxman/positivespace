@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from fastapi import Request
+import traceback
 from app.core.config import settings
-from app.db import init_db, close_db
+from app.db import init_db, close_db, get_db, engine
 from app.api import auth_router, songs_router, generate_router, credits_router
 
 
@@ -34,6 +36,14 @@ app.include_router(generate_router, prefix=settings.API_V1_PREFIX)
 app.include_router(credits_router, prefix=settings.API_V1_PREFIX)
 
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return {
+        "detail": str(exc),
+        "type": type(exc).__name__,
+    }
+
+
 @app.get("/")
 async def root():
     return {
@@ -54,5 +64,16 @@ async def init_database():
     try:
         await init_db()
         return {"status": "success", "message": "Database tables created"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.get("/test-db")
+async def test_database():
+    """Test database connection"""
+    try:
+        async with engine.connect() as conn:
+            result = await conn.execute(text("SELECT 1"))
+            return {"status": "success", "message": "Database connection OK"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
