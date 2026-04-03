@@ -1,0 +1,48 @@
+# ================================
+# PositiveSpace Railway Environment
+# ================================
+
+# --- APP ---
+APP_NAME=PositiveSpace API
+APP_VERSION=0.1.0
+APP_ENV=production
+DEBUG=false
+
+# --- SECURITY (WAJIB DIUBAH!) ---
+SECRET_KEY=wildi-super-secret-123
+
+# --- DATABASE (Supabase PostgreSQL) ---
+DATABASE_URL=postgresql+asyncpg://postgres:[MANDAwildi14]@db.uyxfdmrjycididzakbre.supabase.co:5432/postgres
+
+# --- SECURITY ---
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+ALGORITHM=HS256
+
+# --- CORS ---
+BACKEND_CORS_ORIGINS=["http://localhost:3000","https://positivespace.vercel.app","https://*.railway.app"]
+
+# --- MODAL (Music Generation) ---
+MODAL_USER_NAME=rocxman
+
+# --- CLOUDFLARE R2 (Audio Storage) ---
+R2_ACCESS_KEY_ID=d9112b6ac8427f77939bba0c4a87dda1
+R2_SECRET_ACCESS_KEY=15d0e0e6eb7ec389706c96ea5854d483a478e2ccc3e1d6bf26b32bd7cb1e47cd
+R2_ENDPOINT_URL=https://23d14f2446789860e7c5cb805f868cdd.r2.cloudflarestorage.com
+R2_PUBLIC_URL=https://pub-52aaae3d7b234412b33be73e65313e15.r2.dev
+R2_BUCKET_NAME=positivespace-audio
+
+# --- EMAIL (Optional) ---
+# RESEND_API_KEY=re_xxx
+EMAIL_FROM=noreply@positivespace.ai
+
+# --- STRIPE (Optional) ---
+# STRIPE_SECRET_KEY=sk_live_xxx
+# STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+# --- MIDTRANS (Optional - Indonesia Payment) ---
+# MIDTRANS_SERVER_KEY=xxx
+# MIDTRANS_IS_PRODUCTION=false
+
+# --- SENTRY (Optional - Error Tracking) ---
+# SENTRY_DSN=https://xxx@sentry.io/xxx
