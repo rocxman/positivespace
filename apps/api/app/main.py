@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from fastapi import Request
 from sqlalchemy import text
@@ -44,11 +45,14 @@ app.include_router(credits_router, prefix=settings.API_V1_PREFIX)
 async def global_exception_handler(request: Request, exc: Exception):
     tb = traceback.format_exc()
     logger.error(f"Global exception: {exc}\n{tb}")
-    return {
-        "detail": str(exc),
-        "type": type(exc).__name__,
-        "traceback": tb if settings.DEBUG else None,
-    }
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": str(exc),
+            "type": type(exc).__name__,
+            "traceback": tb if settings.DEBUG else None,
+        }
+    )
 
 
 @app.get("/")
