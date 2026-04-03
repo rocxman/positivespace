@@ -46,3 +46,13 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
+
+
+@app.post("/init-db")
+async def init_database():
+    """Manual endpoint to initialize database tables"""
+    try:
+        await init_db()
+        return {"status": "success", "message": "Database tables created"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
