@@ -1,6 +1,7 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, field_serializer
 from typing import Optional, List
 from datetime import datetime
+from uuid import UUID
 import re
 
 
@@ -43,6 +44,10 @@ class UserResponse(UserBase):
     credits_reset_at: Optional[datetime] = None
     is_verified: bool
     created_at: datetime
+    
+    @field_serializer('id')
+    def serialize_id(self, id):
+        return str(id)
     
     class Config:
         from_attributes = True

@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, Boolean, Integer, DateTime, ForeignKey, Text, JSON
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import relationship
 from app.db.database import Base
 import enum
@@ -41,7 +42,7 @@ class GenerationModel(str, enum.Enum):
 class User(Base):
     __tablename__ = "users"
     
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String(255), unique=True, index=True, nullable=False)
     username = Column(String(50), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
@@ -65,8 +66,8 @@ class User(Base):
 class Song(Base):
     __tablename__ = "songs"
     
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     title = Column(String(200), nullable=False)
     prompt = Column(Text, nullable=True)
     lyrics = Column(Text, nullable=True)
@@ -93,9 +94,9 @@ class Song(Base):
 class GenerationJob(Base):
     __tablename__ = "generation_jobs"
     
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    song_id = Column(String(36), ForeignKey("songs.id", ondelete="CASCADE"), nullable=True)
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    song_id = Column(PG_UUID(as_uuid=True), ForeignKey("songs.id", ondelete="CASCADE"), nullable=True)
     celery_task_id = Column(String(100), nullable=True)
     model = Column(String(50), default=GenerationModel.YUE.value)
     credits_used = Column(Integer, default=0)
@@ -113,8 +114,8 @@ class GenerationJob(Base):
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
     
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     token = Column(String(500), unique=True, index=True, nullable=False)
     expires_at = Column(DateTime, nullable=False)
     is_revoked = Column(Boolean, default=False)
@@ -126,8 +127,8 @@ class RefreshToken(Base):
 class CreditTransaction(Base):
     __tablename__ = "credit_transactions"
     
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     amount = Column(Integer, nullable=False)
     type = Column(String(20), nullable=False)
     description = Column(Text, nullable=True)

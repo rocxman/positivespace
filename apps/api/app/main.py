@@ -4,15 +4,16 @@ from contextlib import asynccontextmanager
 from fastapi import Request
 from sqlalchemy import text
 import traceback
+import logging
 from app.core.config import settings
 from app.db import init_db, close_db, get_db, engine, Base, AsyncSessionLocal
-from app.models import User
-from app.api import auth_router, songs_router, generate_router, credits_router
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_db()
     yield
     await close_db()
 
@@ -40,12 +41,12 @@ app.include_router(credits_router, prefix=settings.API_V1_PREFIX)
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    import traceback
     tb = traceback.format_exc()
+    logger.error(f"Global exception: {exc}\n{tb}")
     return {
         "detail": str(exc),
         "type": type(exc).__name__,
-        "traceback": tb[-1000:] if len(tb) > 1000 else tb,
+        "traceback": tb if settings.DEBUG else None,
     }
 
 
@@ -65,10 +66,12 @@ async def health():
 
 @app.post("/init-db")
 async def init_database():
-    """Manual endpoint to initialize database tables"""
+    """Drop and recreate all tables"""
     try:
-        await init_db()
-        return {"status": "success", "message": "Database tables created"}
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
+        return {"status": "success", "message": "Database tables recreated"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
@@ -82,25 +85,3 @@ async def test_database():
             return {"status": "success", "message": "Database connection OK"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
-
-
-@app.post("/test-create-user")
-async def test_create_user():
-    """Simple test to create a user"""
-    try:
-        from app.core.security import get_password_hash
-        
-        async with AsyncSessionLocal() as db:
-            user = User(
-                email="test_simple@ps.ai",
-                username="testsimple",
-                hashed_password=get_password_hash("TestPass123!"),
-                credits=50,
-            )
-            db.add(user)
-            await db.commit()
-            await db.refresh(user)
-            return {"status": "success", "user_id": str(user.id)}
-    except Exception as e:
-        import traceback
-        return {"status": "error", "detail": str(e), "trace": traceback.format_exc()[-500:]}
