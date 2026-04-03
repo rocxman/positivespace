@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator, field_serializer
+from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 from uuid import UUID
@@ -36,7 +36,7 @@ class UserUpdate(BaseModel):
 
 
 class UserResponse(UserBase):
-    id: str
+    id: UUID
     full_name: Optional[str] = None
     avatar_url: Optional[str] = None
     plan: str
@@ -45,12 +45,10 @@ class UserResponse(UserBase):
     is_verified: bool
     created_at: datetime
     
-    @field_serializer('id')
-    def serialize_id(self, id):
-        return str(id)
-    
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_encoders={UUID: str}
+    )
 
 
 class UserMe(BaseModel):
